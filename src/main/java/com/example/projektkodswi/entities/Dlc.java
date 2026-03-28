@@ -1,11 +1,19 @@
 package com.example.projektkodswi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "dlcs")
@@ -22,6 +30,18 @@ public class Dlc {
 
     @Column(name = "dlc_description", length = 500)
     private String dlcDescription;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "dlcs")
+    private List<Order> orders = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "dlc_characters",
+        joinColumns = @JoinColumn(name = "dlc_id"),
+        inverseJoinColumns = @JoinColumn(name = "character_id")
+    )
+    private List<Character> characters = new ArrayList<>();
 
     public Dlc() {
     }
@@ -53,5 +73,21 @@ public class Dlc {
 
     public void setDlcDescription(String dlcDescription) {
         this.dlcDescription = dlcDescription;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Character> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<Character> characters) {
+        this.characters = characters;
     }
 }

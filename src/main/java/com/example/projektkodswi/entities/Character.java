@@ -1,11 +1,16 @@
 package com.example.projektkodswi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "characters")
@@ -22,6 +27,10 @@ public class Character {
 
     @Column(name = "character_description", length = 500)
     private String characterDescription;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "characters")
+    private List<Dlc> dlcs = new ArrayList<>();
 
     public Character() {
     }
@@ -53,5 +62,13 @@ public class Character {
 
     public void setCharacterDescription(String characterDescription) {
         this.characterDescription = characterDescription;
+    }
+
+    public List<Dlc> getDlcs() {
+        return dlcs;
+    }
+
+    public void setDlcs(List<Dlc> dlcs) {
+        this.dlcs = dlcs;
     }
 }
