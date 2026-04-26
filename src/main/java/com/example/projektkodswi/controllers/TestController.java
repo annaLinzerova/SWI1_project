@@ -1,6 +1,7 @@
 package com.example.projektkodswi.controllers;
 
 
+import com.example.projektkodswi.dto.PlayerDTO;
 import com.example.projektkodswi.entities.Order;
 import com.example.projektkodswi.entities.Player;
 import com.example.projektkodswi.repositories.OrderRepository;
@@ -39,8 +40,15 @@ public class TestController {
     }
 
     @GetMapping("/users")
-    public List<Player> getAllUsers() {
-        return playerRepository.findAll();
+    public List<PlayerDTO> getAllUsers() {
+        return playerRepository.findAll().stream()
+            .map(player -> new PlayerDTO(
+                player.getPlayerId(),
+                player.getUsername(),
+                null,
+                player.getEmail()
+            ))
+            .toList();
     }
 
     @GetMapping("/create-user-with-orders")

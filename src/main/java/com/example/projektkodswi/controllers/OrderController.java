@@ -1,6 +1,7 @@
 package com.example.projektkodswi.controllers;
 
 import com.example.projektkodswi.dto.DlcDTO;
+import com.example.projektkodswi.dto.OrderDTO;
 import com.example.projektkodswi.dto.SkinDTO;
 import com.example.projektkodswi.entities.Dlc;
 import com.example.projektkodswi.entities.Order;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,9 +42,43 @@ public class OrderController {
     @Autowired
     private DlcRepository dlcRepository;
 
+    @GetMapping
+    public List<OrderDTO> getOrders() {
+        return orderRepository.findAll().stream()
+            .map(this::toDto)
+            .toList();
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<?> getOrderById(@PathVariable String orderId) {
+        return orderRepository.findById(orderId)
+            .<ResponseEntity<?>>map(order -> ResponseEntity.ok(toDto(order)))
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Order not found with ID: " + orderId));
+    }
+
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<?> getOrdersByPlayerId(@PathVariable String playerId) {
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Player not found with ID: " + playerId);
+        }
+
+        List<OrderDTO> orders = orderRepository.findByPlayer_PlayerId(playerId).stream()
+            .map(this::toDto)
+            .toList();
+        return ResponseEntity.ok(orders);
+    }
+
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
         try {
+            if (orderRequest == null || orderRequest.getPlayerId() == null || orderRequest.getPlayerId().trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("playerId is required");
+            }
+
             Optional<Player> playerOptional = playerRepository.findById(orderRequest.getPlayerId());
             if (playerOptional.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -79,8 +116,8 @@ public class OrderController {
                 order.setDlcs(dlcs);
             }
 
-            orderRepository.save(order);
-            return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+            Order savedOrder = orderRepository.save(order);
+            return ResponseEntity.status(HttpStatus.CREATED).body(toDto(savedOrder));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error creating order: " + e.getMessage());
@@ -132,6 +169,16 @@ public class OrderController {
             return requestedOrderDate;
         }
         return LocalDateTime.now();
+    }
+
+    private OrderDTO toDto(Order order) {
+        return new OrderDTO(
+            order.getOrderId(),
+            order.getPlayer().getPlayerId(),
+            order.getPlayer().getUsername(),
+            order.getOrderDate(),
+            order.getOrderDescription()
+        );
     }
 
     public static class OrderRequest {

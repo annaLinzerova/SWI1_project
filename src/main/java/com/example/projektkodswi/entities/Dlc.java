@@ -1,7 +1,6 @@
 package com.example.projektkodswi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ public class Dlc {
     @ManyToMany(mappedBy = "dlcs")
     private List<Order> orders = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
         name = "dlc_characters",
         joinColumns = @JoinColumn(name = "dlc_id"),
