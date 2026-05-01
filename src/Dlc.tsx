@@ -1,8 +1,8 @@
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material'
 import React from "react"
 
-function Character() {
-    const characterData = [
+function Dlc() {
+    const dlcData = [
         {
             character_id: 'John',
             character_name: 'test@example.com',
@@ -13,7 +13,7 @@ function Character() {
     const columns = ['character_id', 'character_name', 'character_description', 'id']
     return (<div className="page">
         <header className="page-header">
-            <h1>Characters</h1>
+            <h1>Dlc</h1>
         </header>
         <TableContainer component={Paper}>
             <Table>
@@ -25,11 +25,11 @@ function Character() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {characterData.map((character) => (
-                        <TableRow key={character.id}>
+                    {dlcData.map((dlc) => (
+                        <TableRow key={dlc.id}>
                             {columns.map((column) => (
-                                <TableCell key={`${character.id}-${column}`}>
-                                    {String(character[column as keyof typeof character])}
+                                <TableCell key={`${dlc.id}-${column}`}>
+                                    {String(dlc[column as keyof typeof dlc])}
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -39,4 +39,4 @@ function Character() {
         </TableContainer>
     </div>)
 }
-export default Character
+export default Dlc
