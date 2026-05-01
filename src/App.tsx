@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './ProductsPage.css'
-import RegisterPage from './pages/RegisterPage.tsx'
+import React from "react"
 
 function App() {
   const [responseText, setResponseText] = useState('')
