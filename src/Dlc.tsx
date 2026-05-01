@@ -4,9 +4,9 @@ import React from "react"
 function Dlc() {
     const dlcData = [
         {
-            character_id: 'John',
-            character_name: 'test@example.com',
-            character_description: 'John',
+            dlc_id: 'John',
+            dlc_name: 'test@example.com',
+            dlc_description: 'John',
             id: '2709a361-52c1-4a37-8944-91e23348d0f1',
         },
     ]
@@ -15,7 +15,6 @@ function Dlc() {
         <header className="page-header">
             <h1>Dlc</h1>
         </header>
-        <TableContainer component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -36,7 +35,6 @@ function Dlc() {
                     ))}
                 </TableBody>
             </Table>
-        </TableContainer>
     </div>)
 }
 export default Dlc
