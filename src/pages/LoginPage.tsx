@@ -2,11 +2,12 @@ import './LoginPage.css'
 import React from 'react'
 import { Link } from "react-router-dom"
 
-const MyComponent = () => {
+const RegisterPageConst = () => {
     return(
         <Link to="/RegisterPage">Register Page</Link>
     )
 }
+RegisterPageConst()
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <body>
