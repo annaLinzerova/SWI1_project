@@ -7,7 +7,13 @@ const RegisterPageConst = () => {
         <Link to="/RegisterPage">Register Page</Link>
     )
 }
+const WelcomePage = () => {
+    return(
+        <Link to="/WelcomePage">Welcome Page</Link>
+    )
+}
 RegisterPageConst()
+WelcomePage()
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <body>
@@ -23,10 +29,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <p><label  class="login" for="item2">password:  </label>
   <input id="item2"  class="policko" name="item2" type="text"></p>
 </form>
-<a href="/RegisterPage.tsx"><button id="loginButton" class="loginButton" type="button"><a>Login</a></button></a>
-{<link to="/RegisterPage">Texttttttttt</link>}
+<a href="RegisterPage.tsx"><button id="loginButton" class="loginButton" type="button"><a>Login</a></button></a>
+{<link ="/RegisterPage">Texttttttttt</link>}
 
-<p>If you aren´t registered yet, please click <a href="/RegisterPage.tsx" class ="registerlink">here</a></p>
+<p>If you are not registered yet, please click <a href="RegisterPage.tsx" class ="registerlink">here</a></p>
     
     
 </section>
