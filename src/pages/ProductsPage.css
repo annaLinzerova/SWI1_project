@@ -1,0 +1,55 @@
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #00402D;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    font-weight: 500;
+    color: #FF3900;
+    text-decoration: inherit;
+}
+a:hover {
+    color: #CC4D29;
+}
+
+.nav{
+    display: inline;
+    background-color: lightpink;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.nav li {
+    display: inline-block;
+    font-size: 18px;
+    padding: 15px;
+}
+
+imagessmall{
+    max-width: 25%;
+    display: block;
+}
+
+imagesmiddle{
+    max-width: 50%;
+    display: block;
+}
+
+imageslarge{
+    max-width: 75%;
+    display: block;
+    margin-left: auto;
+}
+
+cudlik{
+    color: #CC4D29;
+}

@@ -1,0 +1,56 @@
+
+body{
+    background-color: #00402D;
+}
+.backimg{
+    opacity: 0.5;
+    width: 150px;
+    padding:0 0 0 0;
+    margin: 0 0 0 0;
+    border: 0;
+}
+
+.velkyObdelnik{
+    background-color:#20604D;
+    margin: 50px 70px 3px 70px;
+    text-align: center;
+    border: 3px solid;
+    border-radius: 10px;
+    border-color: #36160D;
+}
+.velkyObdelnik a{
+    color:#36160D;
+}
+a{
+    color: #36160D;
+}
+
+ul{
+    list-style-type: none;
+    justify-content: center;
+}
+.policko{
+    background-color: #00402D;
+    border: none;
+    border-radius: 5px;
+}
+.loginButton{
+    background-color: #00402D;
+    color: #20604D;
+    border: none;
+    border-radius: 7px;
+    padding:5px 15px 5px 15px;
+    margin: 50px 0 0 0;
+}
+.login{
+    color: #36160D;
+}
+.registerlink:hover{
+    color:white;
+}
+
+h1{
+    font-size: 60px;
+    color: #36160D;
+    margin: 100px 0 0 0;
+}
