@@ -1,26 +1,23 @@
 package com.example.projektkodswi.dto;
 
+import com.example.projektkodswi.entities.Rarity;
+
 public class SkinDTO {
     private String skinId;
     private String skinName;
     private String skinDescription;
-    private double price; // New field for skin price
+    private double price;
+    private Rarity rarity;
 
     public SkinDTO() {
     }
 
-    public SkinDTO(String skinId, String skinName, String skinDescription) {
-        this.skinId = skinId;
-        this.skinName = skinName;
-        this.skinDescription = skinDescription;
-        this.price = 0.0; // Default price
-    }
-
-    public SkinDTO(String skinId, String skinName, String skinDescription, double price) {
+    public SkinDTO(String skinId, String skinName, String skinDescription, double price, Rarity rarity) {
         this.skinId = skinId;
         this.skinName = skinName;
         this.skinDescription = skinDescription;
         this.price = price;
+        this.rarity = rarity;
     }
 
     public String getSkinId() {
@@ -53,5 +50,13 @@ public class SkinDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 }

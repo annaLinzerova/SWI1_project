@@ -3,12 +3,13 @@ package com.example.projektkodswi.config;
 import com.example.projektkodswi.entities.Character;
 import com.example.projektkodswi.entities.Dlc;
 import com.example.projektkodswi.entities.Player;
+import com.example.projektkodswi.entities.Rarity;
 import com.example.projektkodswi.entities.Skin;
 import com.example.projektkodswi.repositories.CharacterRepository;
 import com.example.projektkodswi.repositories.DlcRepository;
 import com.example.projektkodswi.repositories.PlayerRepository;
 import com.example.projektkodswi.repositories.SkinRepository;
-import jakarta.transaction.Transactional; // Import Transactional
+import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ public class DataInitializer {
     private static class CharacterInfo {
         String name;
         String description;
-        double price; // Add price to character info
+        double price;
 
         CharacterInfo(String name, String description, double price) {
             this.name = name;
@@ -48,7 +49,7 @@ public class DataInitializer {
     );
 
     @Bean
-    @Transactional // Add Transactional annotation here
+    @Transactional
     CommandLineRunner seedData(
         PlayerRepository playerRepository,
         SkinRepository skinRepository,
@@ -59,10 +60,9 @@ public class DataInitializer {
         return args -> {
             if (playerRepository.count() == 0) {
                 Player demoPlayer = new Player("demo-player", passwordEncoder.encode("demo123"), "demo@example.com");
-                demoPlayer.setCurrency(1000.0); // Give demo player some starting currency
+                demoPlayer.setCurrency(1000.0);
                 playerRepository.save(demoPlayer);
             } else {
-                // If players already exist, ensure the demo player has currency if they somehow don't
                 playerRepository.findByUsername("demo-player").ifPresent(player -> {
                     if (player.getCurrency() == 0.0) {
                         player.setCurrency(1000.0);
@@ -73,30 +73,28 @@ public class DataInitializer {
 
             syncCharacters(characterRepository, dlcRepository);
 
-            // Fetch existing skins and check if we need to add the new ones
             List<Skin> existingSkins = skinRepository.findAll();
             List<String> existingSkinNames = existingSkins.stream()
                     .map(Skin::getSkinName)
                     .collect(Collectors.toList());
 
             List<Skin> targetSkins = List.of(
-                new Skin("Street Singer", "Street Singer skin.", 50.0),
-                new Skin("Bounty Hunter", "Bounty Hunter skin.", 75.0),
-                new Skin("Summer Dress", "Summer Dress skin.", 40.0),
-                new Skin("Holy Attire", "Holy Attire skin.", 60.0),
-                new Skin("Randez Vous", "Randez Vous skin.", 80.0),
-                new Skin("Masquarade", "Masquarade skin.", 70.0),
-                new Skin("Morning Glory", "Morning Glory skin.", 45.0),
-                new Skin("New Year´s festivities", "New Year´s festivities skin.", 90.0),
-                new Skin("Wheel of Fortune", "Wheel of Fortune skin.", 100.0),
-                new Skin("Song of Ice and Fire", "Song of Ice and Fire skin.", 120.0)
+                new Skin("Street Singer", "Street Singer skin.", 50.0, Rarity.COMMON),
+                new Skin("Bounty Hunter", "Bounty Hunter skin.", 75.0, Rarity.UNCOMMON),
+                new Skin("Summer Dress", "Summer Dress skin.", 40.0, Rarity.COMMON),
+                new Skin("Holy Attire", "Holy Attire skin.", 60.0, Rarity.RARE),
+                new Skin("Randez Vous", "Randez Vous skin.", 80.0, Rarity.EVENT),
+                new Skin("Masquarade", "Masquarade skin.", 70.0, Rarity.UNCOMMON),
+                new Skin("Morning Glory", "Morning Glory skin.", 45.0, Rarity.COMMON),
+                new Skin("New Year´s festivities", "New Year´s festivities skin.", 90.0, Rarity.EVENT),
+                new Skin("Wheel of Fortune", "Wheel of Fortune skin.", 100.0, Rarity.LEGENDARY),
+                new Skin("Song of Ice and Fire", "Song of Ice and Fire skin.", 120.0, Rarity.LEGENDARY)
             );
 
             List<String> targetSkinNames = targetSkins.stream()
                     .map(Skin::getSkinName)
                     .collect(Collectors.toList());
 
-            // Remove skins that are in DB but NOT in our target list
             for (Skin skin : existingSkins) {
                 if (!targetSkinNames.contains(skin.getSkinName())) {
                     skinRepository.delete(skin);
@@ -113,29 +111,28 @@ public class DataInitializer {
                 skinRepository.saveAll(newSkins);
             }
 
-            // Fetch existing dlcs and check if we need to add the new ones
             List<Dlc> existingDlcs = dlcRepository.findAll();
             List<String> existingDlcNames = existingDlcs.stream()
                     .map(Dlc::getDlcName)
                     .collect(Collectors.toList());
 
-            Dlc easterDlc1 = new Dlc("Easter Bunny", "A festive Easter Bunny outfit.", 200.0);
-            Dlc easterDlc2 = new Dlc("Coming of Spring", "Celebrate the arrival of spring.", 180.0);
-            Dlc easterDlc3 = new Dlc("Easter Spirit", "The true spirit of Easter.", 220.0);
+            Dlc easterDlc1 = new Dlc("Easter Bunny", "A festive Easter Bunny outfit.", 200.0, Rarity.EVENT);
+            Dlc easterDlc2 = new Dlc("Coming of Spring", "Celebrate the arrival of spring.", 180.0, Rarity.EVENT);
+            Dlc easterDlc3 = new Dlc("Easter Spirit", "The true spirit of Easter.", 220.0, Rarity.EVENT);
 
-            Dlc schoolDlc1 = new Dlc("Freshman", "The classic freshman look.", 150.0);
-            Dlc schoolDlc2 = new Dlc("Prom Queen", "Ready for the big dance.", 250.0);
-            Dlc schoolDlc3 = new Dlc("School President", "Dressed for leadership.", 200.0);
-            Dlc schoolDlc4 = new Dlc("The Bully", "Tough look for the hallways.", 100.0);
+            Dlc schoolDlc1 = new Dlc("Freshman", "The classic freshman look.", 150.0, Rarity.COMMON);
+            Dlc schoolDlc2 = new Dlc("Prom Queen", "Ready for the big dance.", 250.0, Rarity.RARE);
+            Dlc schoolDlc3 = new Dlc("School President", "Dressed for leadership.", 200.0, Rarity.UNCOMMON);
+            Dlc schoolDlc4 = new Dlc("The Bully", "Tough look for the hallways.", 100.0, Rarity.COMMON);
 
-            Dlc christmasDlc1 = new Dlc("Santa´s Favourite", "Warm and cozy holiday attire.", 300.0);
-            Dlc christmasDlc2 = new Dlc("Santa", "The big man himself.", 350.0);
-            Dlc christmasDlc3 = new Dlc("Little Helper", "Helping out at the North Pole.", 175.0);
+            Dlc christmasDlc1 = new Dlc("Santa´s Favourite", "Warm and cozy holiday attire.", 300.0, Rarity.LEGENDARY);
+            Dlc christmasDlc2 = new Dlc("Santa", "The big man himself.", 350.0, Rarity.LEGENDARY);
+            Dlc christmasDlc3 = new Dlc("Little Helper", "Helping out at the North Pole.", 175.0, Rarity.RARE);
 
-            Dlc weddingDlc1 = new Dlc("Wedding Dress", "A beautiful white gown.", 400.0);
-            Dlc weddingDlc2 = new Dlc("Bridesmaid", "Elegant support for the bride.", 280.0);
-            Dlc weddingDlc3 = new Dlc("Lucky Man", "Sharp suit for the groom.", 320.0);
-            Dlc weddingDlc4 = new Dlc("Honeymoon Suit", "Stylish look for the getaway.", 290.0);
+            Dlc weddingDlc1 = new Dlc("Wedding Dress", "A beautiful white gown.", 400.0, Rarity.LEGENDARY);
+            Dlc weddingDlc2 = new Dlc("Bridesmaid", "Elegant support for the bride.", 280.0, Rarity.RARE);
+            Dlc weddingDlc3 = new Dlc("Lucky Man", "Sharp suit for the groom.", 320.0, Rarity.EVENT);
+            Dlc weddingDlc4 = new Dlc("Honeymoon Suit", "Stylish look for the getaway.", 290.0, Rarity.UNCOMMON);
 
             List<Dlc> allTargetDlcs = List.of(
                 easterDlc1, easterDlc2, easterDlc3,
@@ -148,10 +145,9 @@ public class DataInitializer {
                     .map(Dlc::getDlcName)
                     .collect(Collectors.toList());
 
-            // Remove DLCs that are in DB but NOT in our target list
             for (Dlc dlc : existingDlcs) {
                 if (!targetDlcNames.contains(dlc.getDlcName())) {
-                    dlc.setCharacters(new ArrayList<>()); // Remove references first
+                    dlc.setCharacters(new ArrayList<>());
                     dlcRepository.save(dlc);
                     dlcRepository.delete(dlc);
                 }
@@ -181,7 +177,7 @@ public class DataInitializer {
                 GAME_CHARACTERS.stream().anyMatch(info ->
                     info.name.equals(character.getCharacterName()) &&
                     info.description.equals(character.getCharacterDescription()) &&
-                    info.price == character.getPrice() // Compare price as well
+                    info.price == character.getPrice()
                 )
             );
 
@@ -199,12 +195,11 @@ public class DataInitializer {
         characterRepository.flush();
 
         List<Character> charactersToSave = GAME_CHARACTERS.stream()
-            .map(info -> new Character(info.name, info.description, info.price)) // Pass price to Character constructor
+            .map(info -> new Character(info.name, info.description, info.price))
             .toList();
             
         List<Character> savedCharacters = characterRepository.saveAll(charactersToSave);
 
-        // Re-associate new characters with existing DLCs
         for (Dlc dlc : existingDlcs) {
             dlc.setCharacters(new ArrayList<>(savedCharacters));
         }

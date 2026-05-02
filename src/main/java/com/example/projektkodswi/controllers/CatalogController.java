@@ -55,11 +55,11 @@ public class CatalogController {
     }
 
     private SkinDTO toDto(Skin skin) {
-        return new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice());
+        return new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice(), skin.getRarity());
     }
 
     private DlcDTO toDto(Dlc dlc) {
-        return new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice());
+        return new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice(), dlc.getRarity());
     }
 
     private CharacterDTO toDto(Character character) {

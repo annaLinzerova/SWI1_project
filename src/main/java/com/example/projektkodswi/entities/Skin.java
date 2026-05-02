@@ -3,6 +3,8 @@ package com.example.projektkodswi.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -29,25 +31,32 @@ public class Skin {
     private String skinDescription;
 
     @Column(name = "price", nullable = false)
-    private double price; // New field for skin price
+    private double price;
+
+    @Enumerated(EnumType.STRING) // Store enum as String in DB
+    @Column(name = "rarity", nullable = false)
+    private Rarity rarity; // New field for skin rarity
 
     @JsonIgnore
     @ManyToMany(mappedBy = "skins")
     private List<Order> orders = new ArrayList<>();
 
     public Skin() {
-    }
-
-    public Skin(String skinName, String skinDescription) {
-        this.skinName = skinName;
-        this.skinDescription = skinDescription;
-        this.price = 0.0; // Default price
+        this.rarity = Rarity.COMMON; // Default rarity
     }
 
     public Skin(String skinName, String skinDescription, double price) {
         this.skinName = skinName;
         this.skinDescription = skinDescription;
         this.price = price;
+        this.rarity = Rarity.COMMON; // Default rarity
+    }
+
+    public Skin(String skinName, String skinDescription, double price, Rarity rarity) {
+        this.skinName = skinName;
+        this.skinDescription = skinDescription;
+        this.price = price;
+        this.rarity = rarity;
     }
 
     public String getSkinId() {
@@ -80,6 +89,14 @@ public class Skin {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 
     public List<Order> getOrders() {

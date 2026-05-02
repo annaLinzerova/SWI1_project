@@ -11,6 +11,7 @@ import com.example.projektkodswi.repositories.DlcRepository;
 import com.example.projektkodswi.repositories.OrderRepository;
 import com.example.projektkodswi.repositories.PlayerRepository;
 import com.example.projektkodswi.repositories.SkinRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
         try {
             if (orderRequest == null || orderRequest.getPlayerId() == null || orderRequest.getPlayerId().trim().isEmpty()) {
@@ -88,24 +90,16 @@ public class OrderController {
             }
 
             Player player = playerOptional.get();
-
-            Set<String> ownedSkinIds = player.getOrders().stream()
-                    .flatMap(order -> order.getSkins().stream())
-                    .map(Skin::getSkinId)
-                    .collect(Collectors.toSet());
-
-            Set<String> ownedDlcIds = player.getOrders().stream()
-                    .flatMap(order -> order.getDlcs().stream())
-                    .map(Dlc::getDlcId)
-                    .collect(Collectors.toSet());
-
-            Order order = new Order();
-            order.setPlayer(player);
-            order.setOrderDate(resolveOrderDate(orderRequest.getOrderDate()));
-            order.setOrderDescription(orderRequest.getOrderDescription());
+            double totalCost = 0.0;
+            List<Skin> skinsToPurchase = new ArrayList<>();
+            List<Dlc> dlcsToPurchase = new ArrayList<>();
 
             if (orderRequest.getSkinIds() != null && !orderRequest.getSkinIds().isEmpty()) {
-                List<Skin> skins = new ArrayList<>();
+                Set<String> ownedSkinIds = player.getOrders().stream()
+                        .flatMap(order -> order.getSkins().stream())
+                        .map(Skin::getSkinId)
+                        .collect(Collectors.toSet());
+
                 for (String skinId : orderRequest.getSkinIds()) {
                     if (ownedSkinIds.contains(skinId)) {
                         return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -116,13 +110,17 @@ public class OrderController {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body("Skin not found with ID: " + skinId);
                     }
-                    skins.add(skinOptional.get());
+                    skinsToPurchase.add(skinOptional.get());
+                    totalCost += skinOptional.get().getPrice();
                 }
-                order.setSkins(skins);
             }
 
             if (orderRequest.getDlcIds() != null && !orderRequest.getDlcIds().isEmpty()) {
-                List<Dlc> dlcs = new ArrayList<>();
+                Set<String> ownedDlcIds = player.getOrders().stream()
+                        .flatMap(order -> order.getDlcs().stream())
+                        .map(Dlc::getDlcId)
+                        .collect(Collectors.toSet());
+
                 for (String dlcId : orderRequest.getDlcIds()) {
                     if (ownedDlcIds.contains(dlcId)) {
                         return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -133,14 +131,31 @@ public class OrderController {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body("Dlc not found with ID: " + dlcId);
                     }
-                    dlcs.add(dlcOptional.get());
+                    dlcsToPurchase.add(dlcOptional.get());
+                    totalCost += dlcOptional.get().getPrice();
                 }
-                order.setDlcs(dlcs);
             }
+
+            if (player.getCurrency() < totalCost) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Insufficient currency. Player has " + player.getCurrency() + ", but needs " + totalCost);
+            }
+
+            player.setCurrency(player.getCurrency() - totalCost);
+            playerRepository.save(player);
+
+            Order order = new Order();
+            order.setPlayer(player);
+            order.setOrderDate(resolveOrderDate(orderRequest.getOrderDate()));
+            order.setOrderDescription(orderRequest.getOrderDescription());
+            order.setSkins(skinsToPurchase);
+            order.setDlcs(dlcsToPurchase);
 
             Order savedOrder = orderRepository.save(order);
             return ResponseEntity.status(HttpStatus.CREATED).body(toDto(savedOrder));
+
         } catch (Exception e) {
+            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error creating order: " + e.getMessage());
         }
@@ -160,7 +175,7 @@ public class OrderController {
 
         List<SkinDTO> skinDTOs = new ArrayList<>();
         for (Skin skin : orderOptional.get().getSkins()) {
-            skinDTOs.add(new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription()));
+            skinDTOs.add(new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice(), skin.getRarity()));
         }
 
         return ResponseEntity.ok(skinDTOs);
@@ -180,7 +195,7 @@ public class OrderController {
 
         List<DlcDTO> dlcDTOs = new ArrayList<>();
         for (Dlc dlc : orderOptional.get().getDlcs()) {
-            dlcDTOs.add(new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription()));
+            dlcDTOs.add(new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice(), dlc.getRarity()));
         }
 
         return ResponseEntity.ok(dlcDTOs);

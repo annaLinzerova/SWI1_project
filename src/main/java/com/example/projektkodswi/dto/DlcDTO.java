@@ -1,26 +1,23 @@
 package com.example.projektkodswi.dto;
 
+import com.example.projektkodswi.entities.Rarity;
+
 public class DlcDTO {
     private String dlcId;
     private String dlcName;
     private String dlcDescription;
-    private double price; // New field for DLC price
+    private double price;
+    private Rarity rarity;
 
     public DlcDTO() {
     }
 
-    public DlcDTO(String dlcId, String dlcName, String dlcDescription) {
-        this.dlcId = dlcId;
-        this.dlcName = dlcName;
-        this.dlcDescription = dlcDescription;
-        this.price = 0.0; // Default price
-    }
-
-    public DlcDTO(String dlcId, String dlcName, String dlcDescription, double price) {
+    public DlcDTO(String dlcId, String dlcName, String dlcDescription, double price, Rarity rarity) {
         this.dlcId = dlcId;
         this.dlcName = dlcName;
         this.dlcDescription = dlcDescription;
         this.price = price;
+        this.rarity = rarity;
     }
 
     public String getDlcId() {
@@ -53,5 +50,13 @@ public class DlcDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 }

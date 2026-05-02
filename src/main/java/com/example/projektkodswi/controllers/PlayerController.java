@@ -75,11 +75,11 @@ public class PlayerController {
 
         List<OrderProfileDTO> orderProfiles = playerOrders.stream().map(order -> {
             List<SkinDTO> skinDTOs = order.getSkins().stream()
-                .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice()))
+                .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice(), skin.getRarity()))
                 .collect(Collectors.toList());
             
             List<DlcDTO> dlcDTOs = order.getDlcs().stream()
-                .map(dlc -> new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice()))
+                .map(dlc -> new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice(), dlc.getRarity()))
                 .collect(Collectors.toList());
 
             return new OrderProfileDTO(

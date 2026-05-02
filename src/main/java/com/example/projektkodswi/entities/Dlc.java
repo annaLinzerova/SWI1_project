@@ -3,6 +3,8 @@ package com.example.projektkodswi.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -31,7 +33,11 @@ public class Dlc {
     private String dlcDescription;
 
     @Column(name = "price", nullable = false)
-    private double price; // New field for DLC price
+    private double price;
+
+    @Enumerated(EnumType.STRING) // Store enum as String in DB
+    @Column(name = "rarity", nullable = false)
+    private Rarity rarity; // New field for DLC rarity
 
     @JsonIgnore
     @ManyToMany(mappedBy = "dlcs")
@@ -46,18 +52,21 @@ public class Dlc {
     private List<Character> characters = new ArrayList<>();
 
     public Dlc() {
-    }
-
-    public Dlc(String dlcName, String dlcDescription) {
-        this.dlcName = dlcName;
-        this.dlcDescription = dlcDescription;
-        this.price = 0.0; // Default price
+        this.rarity = Rarity.COMMON; // Default rarity
     }
 
     public Dlc(String dlcName, String dlcDescription, double price) {
         this.dlcName = dlcName;
         this.dlcDescription = dlcDescription;
         this.price = price;
+        this.rarity = Rarity.COMMON; // Default rarity
+    }
+
+    public Dlc(String dlcName, String dlcDescription, double price, Rarity rarity) {
+        this.dlcName = dlcName;
+        this.dlcDescription = dlcDescription;
+        this.price = price;
+        this.rarity = rarity;
     }
 
     public String getDlcId() {
@@ -90,6 +99,14 @@ public class Dlc {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 
     public List<Order> getOrders() {
