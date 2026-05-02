@@ -7,6 +7,7 @@ import com.example.projektkodswi.dto.PlayerProfileDTO;
 import com.example.projektkodswi.dto.SkinDTO;
 import com.example.projektkodswi.entities.Order;
 import com.example.projektkodswi.entities.Player;
+import com.example.projektkodswi.repositories.OrderRepository;
 import com.example.projektkodswi.repositories.PlayerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,12 @@ import java.util.stream.Collectors;
 public class PlayerController {
 
     private final PlayerRepository playerRepository;
+    private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public PlayerController(PlayerRepository playerRepository, PasswordEncoder passwordEncoder) {
+    public PlayerController(PlayerRepository playerRepository, OrderRepository orderRepository, PasswordEncoder passwordEncoder) {
         this.playerRepository = playerRepository;
+        this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,15 +54,24 @@ public class PlayerController {
 
     @GetMapping("/{playerId}/profile")
     public ResponseEntity<?> getPlayerProfile(@PathVariable String playerId) {
+        System.out.println("== DEBUG PROFILE =========================================");
+        System.out.println("== DEBUG PROFILE ==> Received request for playerId: " + playerId);
+
         Optional<Player> playerOptional = playerRepository.findById(playerId);
         if (playerOptional.isEmpty()) {
+            System.out.println("== DEBUG PROFILE ==> Player not found in database.");
+            System.out.println("==========================================================");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player not found with ID: " + playerId);
         }
 
         Player player = playerOptional.get();
+        System.out.println("== DEBUG PROFILE ==> Found player username: " + player.getUsername());
 
-        List<OrderProfileDTO> orderProfiles = player.getOrders().stream().map(order -> {
+        List<Order> playerOrders = orderRepository.findByPlayer_PlayerId(playerId);
+        System.out.println("== DEBUG PROFILE ==> Found " + playerOrders.size() + " orders for this player.");
+
+        List<OrderProfileDTO> orderProfiles = playerOrders.stream().map(order -> {
             List<SkinDTO> skinDTOs = order.getSkins().stream()
                 .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription()))
                 .collect(Collectors.toList());
@@ -83,7 +95,9 @@ public class PlayerController {
             player.getEmail(),
             orderProfiles
         );
-
+        
+        System.out.println("== DEBUG PROFILE ==> Successfully built profile DTO.");
+        System.out.println("==========================================================");
         return ResponseEntity.ok(profileDTO);
     }
 
