@@ -89,7 +89,6 @@ public class OrderController {
 
             Player player = playerOptional.get();
 
-            // Get all currently owned skins and DLCs for this player
             Set<String> ownedSkinIds = player.getOrders().stream()
                     .flatMap(order -> order.getSkins().stream())
                     .map(Skin::getSkinId)

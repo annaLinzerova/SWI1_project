@@ -39,7 +39,6 @@ public class Player {
         this.email = email;
     }
 
-    // Getters and Setters
     public String getPlayerId() {
         return playerId;
     }

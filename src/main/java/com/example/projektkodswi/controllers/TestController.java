@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// Add UUID for unique usernames.
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
