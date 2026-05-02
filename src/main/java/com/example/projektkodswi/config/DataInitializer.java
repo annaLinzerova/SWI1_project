@@ -20,18 +20,28 @@ import java.util.stream.Collectors;
 @Configuration
 public class DataInitializer {
 
-    private static final List<String> GAME_CHARACTER_NAMES = List.of(
-        "Nicolas McCartney",
-        "Luke Noshida",
-        "Emily Luca",
-        "Monica Smith",
-        "Taras Pullman",
-        "Kimiko Lorona",
-        "Hugo Oneil",
-        "John Roberts",
-        "Julia Kala",
-        "Robert Reeds",
-        "Lucille Jones"
+    private static class CharacterInfo {
+        String name;
+        String description;
+
+        CharacterInfo(String name, String description) {
+            this.name = name;
+            this.description = description;
+        }
+    }
+
+    private static final List<CharacterInfo> GAME_CHARACTERS = List.of(
+        new CharacterInfo("Nicolas McCartney", "Male, 32 years old, Scottish."),
+        new CharacterInfo("Luke Noshida", "Male, 25 years old, Japanese."),
+        new CharacterInfo("Emily Luca", "Female, 28 years old, Italian."),
+        new CharacterInfo("Monica Smith", "Female, 35 years old, American."),
+        new CharacterInfo("Taras Pullman", "Male, 40 years old, Ukrainian."),
+        new CharacterInfo("Kimiko Lorona", "Female, 22 years old, Mexican-Japanese."),
+        new CharacterInfo("Hugo Oneil", "Male, 29 years old, Irish."),
+        new CharacterInfo("John Roberts", "Male, 45 years old, British."),
+        new CharacterInfo("Julia Kala", "Female, 31 years old, Polish."),
+        new CharacterInfo("Robert Reeds", "Male, 38 years old, Canadian."),
+        new CharacterInfo("Lucille Jones", "Female, 27 years old, Australian.")
     );
 
     @Bean
@@ -50,11 +60,11 @@ public class DataInitializer {
             syncCharacters(characterRepository, dlcRepository);
 
             // Fetch existing skins and check if we need to add the new ones
-            List<String> existingSkinNames = skinRepository.findAll().stream()
+            List<Skin> existingSkins = skinRepository.findAll();
+            List<String> existingSkinNames = existingSkins.stream()
                     .map(Skin::getSkinName)
                     .collect(Collectors.toList());
 
-            List<Skin> newSkins = new ArrayList<>();
             List<Skin> targetSkins = List.of(
                 new Skin("Street Singer", "Street Singer skin."),
                 new Skin("Bounty Hunter", "Bounty Hunter skin."),
@@ -68,23 +78,32 @@ public class DataInitializer {
                 new Skin("Song of Ice and Fire", "Song of Ice and Fire skin.")
             );
 
+            List<String> targetSkinNames = targetSkins.stream()
+                    .map(Skin::getSkinName)
+                    .collect(Collectors.toList());
+
+            // Remove skins that are in DB but NOT in our target list
+            for (Skin skin : existingSkins) {
+                if (!targetSkinNames.contains(skin.getSkinName())) {
+                    skinRepository.delete(skin);
+                }
+            }
+
+            List<Skin> newSkins = new ArrayList<>();
             for (Skin skin : targetSkins) {
                 if (!existingSkinNames.contains(skin.getSkinName())) {
                     newSkins.add(skin);
                 }
             }
-
             if (!newSkins.isEmpty()) {
                 skinRepository.saveAll(newSkins);
             }
 
             // Fetch existing dlcs and check if we need to add the new ones
-            List<String> existingDlcNames = dlcRepository.findAll().stream()
+            List<Dlc> existingDlcs = dlcRepository.findAll();
+            List<String> existingDlcNames = existingDlcs.stream()
                     .map(Dlc::getDlcName)
                     .collect(Collectors.toList());
-
-            List<Dlc> newDlcs = new ArrayList<>();
-            List<Character> characters = characterRepository.findAll();
 
             Dlc easterDlc1 = new Dlc("Easter Bunny", "A festive Easter Bunny outfit.");
             Dlc easterDlc2 = new Dlc("Coming of Spring", "Celebrate the arrival of spring.");
@@ -111,6 +130,22 @@ public class DataInitializer {
                 weddingDlc1, weddingDlc2, weddingDlc3, weddingDlc4
             );
 
+            List<String> targetDlcNames = allTargetDlcs.stream()
+                    .map(Dlc::getDlcName)
+                    .collect(Collectors.toList());
+
+            // Remove DLCs that are in DB but NOT in our target list
+            for (Dlc dlc : existingDlcs) {
+                if (!targetDlcNames.contains(dlc.getDlcName())) {
+                    dlc.setCharacters(new ArrayList<>()); // Remove references first
+                    dlcRepository.save(dlc);
+                    dlcRepository.delete(dlc);
+                }
+            }
+
+            List<Dlc> newDlcs = new ArrayList<>();
+            List<Character> characters = characterRepository.findAll();
+
             for (Dlc dlc : allTargetDlcs) {
                 if (!existingDlcNames.contains(dlc.getDlcName())) {
                     dlc.setCharacters(new ArrayList<>(characters));
@@ -126,9 +161,14 @@ public class DataInitializer {
 
     private void syncCharacters(CharacterRepository characterRepository, DlcRepository dlcRepository) {
         List<Character> existingCharacters = characterRepository.findAll();
-        boolean alreadySynced = existingCharacters.size() == GAME_CHARACTER_NAMES.size()
+        
+        boolean alreadySynced = existingCharacters.size() == GAME_CHARACTERS.size()
             && existingCharacters.stream().allMatch(character ->
-                GAME_CHARACTER_NAMES.contains(character.getCharacterName()));
+                GAME_CHARACTERS.stream().anyMatch(info ->
+                    info.name.equals(character.getCharacterName()) &&
+                    info.description.equals(character.getCharacterDescription())
+                )
+            );
 
         if (alreadySynced) {
             return;
@@ -143,9 +183,10 @@ public class DataInitializer {
         characterRepository.deleteAll();
         characterRepository.flush();
 
-        List<Character> charactersToSave = GAME_CHARACTER_NAMES.stream()
-            .map(name -> new Character(name, "Playable game character."))
+        List<Character> charactersToSave = GAME_CHARACTERS.stream()
+            .map(info -> new Character(info.name, info.description))
             .toList();
+            
         List<Character> savedCharacters = characterRepository.saveAll(charactersToSave);
 
         // Re-associate new characters with existing DLCs
