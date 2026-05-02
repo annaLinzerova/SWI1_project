@@ -56,8 +56,6 @@ public class DataInitializer {
 
             List<Skin> newSkins = new ArrayList<>();
             List<Skin> targetSkins = List.of(
-                new Skin("Crimson Phantom", "Legendary red-black armor set."),
-                new Skin("Arctic Pulse", "Cold-toned tactical skin."),
                 new Skin("Street Singer", "Street Singer skin."),
                 new Skin("Bounty Hunter", "Bounty Hunter skin."),
                 new Skin("Summer Dress", "Summer Dress skin."),
