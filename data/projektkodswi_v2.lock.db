@@ -1,6 +1,6 @@
 #FileLock
-#Sat May 02 14:48:33 CEST 2026
+#Sat May 02 15:09:14 CEST 2026
 hostName=Lucidupka
-id=19de8bbc5b6ead5b021d200970942cc96c9368f2513
+id=19de8ceb5d07bd711ba5da1b13f812a18e9c8db39e5
 method=file
-server=192.168.56.1\:54952
+server=192.168.56.1\:56703
