@@ -4,6 +4,7 @@ public class SkinDTO {
     private String skinId;
     private String skinName;
     private String skinDescription;
+    private double price; // New field for skin price
 
     public SkinDTO() {
     }
@@ -12,6 +13,14 @@ public class SkinDTO {
         this.skinId = skinId;
         this.skinName = skinName;
         this.skinDescription = skinDescription;
+        this.price = 0.0; // Default price
+    }
+
+    public SkinDTO(String skinId, String skinName, String skinDescription, double price) {
+        this.skinId = skinId;
+        this.skinName = skinName;
+        this.skinDescription = skinDescription;
+        this.price = price;
     }
 
     public String getSkinId() {
@@ -36,5 +45,13 @@ public class SkinDTO {
 
     public void setSkinDescription(String skinDescription) {
         this.skinDescription = skinDescription;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

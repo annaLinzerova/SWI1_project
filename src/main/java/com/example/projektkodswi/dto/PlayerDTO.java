@@ -3,8 +3,9 @@ package com.example.projektkodswi.dto;
 public class PlayerDTO {
     private String playerId;
     private String username;
-    private String password;
+    private String password; // Keep for registration/login, but typically null for profile
     private String email;
+    private double currency; // New field for player currency
 
     public PlayerDTO() {
     }
@@ -14,6 +15,14 @@ public class PlayerDTO {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public PlayerDTO(String playerId, String username, String password, String email, double currency) {
+        this.playerId = playerId;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.currency = currency;
     }
 
     public String getPlayerId() {
@@ -46,5 +55,13 @@ public class PlayerDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public double getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(double currency) {
+        this.currency = currency;
     }
 }

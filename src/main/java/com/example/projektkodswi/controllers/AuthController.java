@@ -22,6 +22,9 @@ public class AuthController {
     private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Define initial currency for new players
+    private static final double INITIAL_NEW_PLAYER_CURRENCY = 500.0; 
+
     public AuthController(PlayerRepository playerRepository, PasswordEncoder passwordEncoder) {
         this.playerRepository = playerRepository;
         this.passwordEncoder = passwordEncoder;
@@ -48,6 +51,7 @@ public class AuthController {
         player.setUsername(request.getUsername().trim());
         player.setPassword(passwordEncoder.encode(request.getPassword()));
         player.setEmail(isBlank(request.getEmail()) ? null : request.getEmail().trim());
+        player.setCurrency(INITIAL_NEW_PLAYER_CURRENCY); // Set initial currency for new players
 
         Player savedPlayer = playerRepository.save(player);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -81,7 +85,8 @@ public class AuthController {
     }
 
     private PlayerDTO toDto(Player player) {
-        return new PlayerDTO(player.getPlayerId(), player.getUsername(), null, player.getEmail());
+        // Include currency in the DTO returned after login/registration
+        return new PlayerDTO(player.getPlayerId(), player.getUsername(), null, player.getEmail(), player.getCurrency());
     }
 
     private boolean isBlank(String value) {

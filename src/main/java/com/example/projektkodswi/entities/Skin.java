@@ -28,6 +28,9 @@ public class Skin {
     @Column(name = "skin_description", length = 500)
     private String skinDescription;
 
+    @Column(name = "price", nullable = false)
+    private double price; // New field for skin price
+
     @JsonIgnore
     @ManyToMany(mappedBy = "skins")
     private List<Order> orders = new ArrayList<>();
@@ -38,6 +41,13 @@ public class Skin {
     public Skin(String skinName, String skinDescription) {
         this.skinName = skinName;
         this.skinDescription = skinDescription;
+        this.price = 0.0; // Default price
+    }
+
+    public Skin(String skinName, String skinDescription, double price) {
+        this.skinName = skinName;
+        this.skinDescription = skinDescription;
+        this.price = price;
     }
 
     public String getSkinId() {
@@ -62,6 +72,14 @@ public class Skin {
 
     public void setSkinDescription(String skinDescription) {
         this.skinDescription = skinDescription;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public List<Order> getOrders() {

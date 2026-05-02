@@ -26,19 +26,25 @@ public class Player {
     @Column(name = "email", length = 100)
     private String email;
 
+    @Column(name = "currency", nullable = false)
+    private double currency; // New field for player currency
+
     @JsonIgnore
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     public Player() {
+        this.currency = 0.0; // Default currency for new players
     }
 
     public Player(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.currency = 0.0; // Default currency for new players
     }
 
+    // Getters and Setters
     public String getPlayerId() {
         return playerId;
     }
@@ -69,6 +75,14 @@ public class Player {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public double getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(double currency) {
+        this.currency = currency;
     }
 
     public List<Order> getOrders() {

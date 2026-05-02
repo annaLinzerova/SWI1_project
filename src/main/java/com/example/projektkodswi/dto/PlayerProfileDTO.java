@@ -6,6 +6,7 @@ public class PlayerProfileDTO {
     private String playerId;
     private String username;
     private String email;
+    private double currency; // New field for player currency
     private List<OrderProfileDTO> orders;
 
     public PlayerProfileDTO() {
@@ -15,6 +16,14 @@ public class PlayerProfileDTO {
         this.playerId = playerId;
         this.username = username;
         this.email = email;
+        this.orders = orders;
+    }
+
+    public PlayerProfileDTO(String playerId, String username, String email, double currency, List<OrderProfileDTO> orders) {
+        this.playerId = playerId;
+        this.username = username;
+        this.email = email;
+        this.currency = currency;
         this.orders = orders;
     }
 
@@ -40,6 +49,14 @@ public class PlayerProfileDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public double getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(double currency) {
+        this.currency = currency;
     }
 
     public List<OrderProfileDTO> getOrders() {

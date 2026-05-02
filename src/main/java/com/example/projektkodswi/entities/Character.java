@@ -28,6 +28,9 @@ public class Character {
     @Column(name = "character_description", length = 500)
     private String characterDescription;
 
+    @Column(name = "price", nullable = false)
+    private double price; // New field for character price
+
     @JsonIgnore
     @ManyToMany(mappedBy = "characters")
     private List<Dlc> dlcs = new ArrayList<>();
@@ -38,6 +41,13 @@ public class Character {
     public Character(String characterName, String characterDescription) {
         this.characterName = characterName;
         this.characterDescription = characterDescription;
+        this.price = 0.0; // Default price
+    }
+
+    public Character(String characterName, String characterDescription, double price) {
+        this.characterName = characterName;
+        this.characterDescription = characterDescription;
+        this.price = price;
     }
 
     public String getCharacterId() {
@@ -62,6 +72,14 @@ public class Character {
 
     public void setCharacterDescription(String characterDescription) {
         this.characterDescription = characterDescription;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public List<Dlc> getDlcs() {

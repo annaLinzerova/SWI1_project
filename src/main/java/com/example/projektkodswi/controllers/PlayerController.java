@@ -67,17 +67,19 @@ public class PlayerController {
 
         Player player = playerOptional.get();
         System.out.println("== DEBUG PROFILE ==> Found player username: " + player.getUsername());
+        System.out.println("== DEBUG PROFILE ==> Player currency: " + player.getCurrency());
+
 
         List<Order> playerOrders = orderRepository.findByPlayer_PlayerId(playerId);
         System.out.println("== DEBUG PROFILE ==> Found " + playerOrders.size() + " orders for this player.");
 
         List<OrderProfileDTO> orderProfiles = playerOrders.stream().map(order -> {
             List<SkinDTO> skinDTOs = order.getSkins().stream()
-                .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription()))
+                .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription(), skin.getPrice()))
                 .collect(Collectors.toList());
             
             List<DlcDTO> dlcDTOs = order.getDlcs().stream()
-                .map(dlc -> new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription()))
+                .map(dlc -> new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription(), dlc.getPrice()))
                 .collect(Collectors.toList());
 
             return new OrderProfileDTO(
@@ -93,6 +95,7 @@ public class PlayerController {
             player.getPlayerId(),
             player.getUsername(),
             player.getEmail(),
+            player.getCurrency(), // Pass currency to PlayerProfileDTO
             orderProfiles
         );
         
@@ -132,7 +135,8 @@ public class PlayerController {
             player.getPlayerId(),
             player.getUsername(),
             null,
-            player.getEmail()
+            player.getEmail(),
+            player.getCurrency() // Pass currency to PlayerDTO
         );
     }
 

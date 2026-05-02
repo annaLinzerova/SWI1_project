@@ -30,6 +30,9 @@ public class Dlc {
     @Column(name = "dlc_description", length = 500)
     private String dlcDescription;
 
+    @Column(name = "price", nullable = false)
+    private double price; // New field for DLC price
+
     @JsonIgnore
     @ManyToMany(mappedBy = "dlcs")
     private List<Order> orders = new ArrayList<>();
@@ -48,6 +51,13 @@ public class Dlc {
     public Dlc(String dlcName, String dlcDescription) {
         this.dlcName = dlcName;
         this.dlcDescription = dlcDescription;
+        this.price = 0.0; // Default price
+    }
+
+    public Dlc(String dlcName, String dlcDescription, double price) {
+        this.dlcName = dlcName;
+        this.dlcDescription = dlcDescription;
+        this.price = price;
     }
 
     public String getDlcId() {
@@ -72,6 +82,14 @@ public class Dlc {
 
     public void setDlcDescription(String dlcDescription) {
         this.dlcDescription = dlcDescription;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public List<Order> getOrders() {

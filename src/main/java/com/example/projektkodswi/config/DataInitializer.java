@@ -8,6 +8,7 @@ import com.example.projektkodswi.repositories.CharacterRepository;
 import com.example.projektkodswi.repositories.DlcRepository;
 import com.example.projektkodswi.repositories.PlayerRepository;
 import com.example.projektkodswi.repositories.SkinRepository;
+import jakarta.transaction.Transactional; // Import Transactional
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,28 +24,31 @@ public class DataInitializer {
     private static class CharacterInfo {
         String name;
         String description;
+        double price; // Add price to character info
 
-        CharacterInfo(String name, String description) {
+        CharacterInfo(String name, String description, double price) {
             this.name = name;
             this.description = description;
+            this.price = price;
         }
     }
 
     private static final List<CharacterInfo> GAME_CHARACTERS = List.of(
-        new CharacterInfo("Nicolas McCartney", "Male, 32 years old, Scottish."),
-        new CharacterInfo("Luke Noshida", "Male, 25 years old, Japanese."),
-        new CharacterInfo("Emily Luca", "Female, 28 years old, Italian."),
-        new CharacterInfo("Monica Smith", "Female, 35 years old, American."),
-        new CharacterInfo("Taras Pullman", "Male, 40 years old, Ukrainian."),
-        new CharacterInfo("Kimiko Lorona", "Female, 22 years old, Mexican-Japanese."),
-        new CharacterInfo("Hugo Oneil", "Male, 29 years old, Irish."),
-        new CharacterInfo("John Roberts", "Male, 45 years old, British."),
-        new CharacterInfo("Julia Kala", "Female, 31 years old, Polish."),
-        new CharacterInfo("Robert Reeds", "Male, 38 years old, Canadian."),
-        new CharacterInfo("Lucille Jones", "Female, 27 years old, Australian.")
+        new CharacterInfo("Nicolas McCartney", "Male, 32 years old, Scottish.", 150.0),
+        new CharacterInfo("Luke Noshida", "Male, 25 years old, Japanese.", 120.0),
+        new CharacterInfo("Emily Luca", "Female, 28 years old, Italian.", 130.0),
+        new CharacterInfo("Monica Smith", "Female, 35 years old, American.", 160.0),
+        new CharacterInfo("Taras Pullman", "Male, 40 years old, Ukrainian.", 140.0),
+        new CharacterInfo("Kimiko Lorona", "Female, 22 years old, Mexican-Japanese.", 110.0),
+        new CharacterInfo("Hugo Oneil", "Male, 29 years old, Irish.", 125.0),
+        new CharacterInfo("John Roberts", "Male, 45 years old, British.", 170.0),
+        new CharacterInfo("Julia Kala", "Female, 31 years old, Polish.", 135.0),
+        new CharacterInfo("Robert Reeds", "Male, 38 years old, Canadian.", 155.0),
+        new CharacterInfo("Lucille Jones", "Female, 27 years old, Australian.", 115.0)
     );
 
     @Bean
+    @Transactional // Add Transactional annotation here
     CommandLineRunner seedData(
         PlayerRepository playerRepository,
         SkinRepository skinRepository,
@@ -54,7 +58,17 @@ public class DataInitializer {
     ) {
         return args -> {
             if (playerRepository.count() == 0) {
-                playerRepository.save(new Player("demo-player", passwordEncoder.encode("demo123"), "demo@example.com"));
+                Player demoPlayer = new Player("demo-player", passwordEncoder.encode("demo123"), "demo@example.com");
+                demoPlayer.setCurrency(1000.0); // Give demo player some starting currency
+                playerRepository.save(demoPlayer);
+            } else {
+                // If players already exist, ensure the demo player has currency if they somehow don't
+                playerRepository.findByUsername("demo-player").ifPresent(player -> {
+                    if (player.getCurrency() == 0.0) {
+                        player.setCurrency(1000.0);
+                        playerRepository.save(player);
+                    }
+                });
             }
 
             syncCharacters(characterRepository, dlcRepository);
@@ -66,16 +80,16 @@ public class DataInitializer {
                     .collect(Collectors.toList());
 
             List<Skin> targetSkins = List.of(
-                new Skin("Street Singer", "Street Singer skin."),
-                new Skin("Bounty Hunter", "Bounty Hunter skin."),
-                new Skin("Summer Dress", "Summer Dress skin."),
-                new Skin("Holy Attire", "Holy Attire skin."),
-                new Skin("Randez Vous", "Randez Vous skin."),
-                new Skin("Masquarade", "Masquarade skin."),
-                new Skin("Morning Glory", "Morning Glory skin."),
-                new Skin("New Year´s festivities", "New Year´s festivities skin."),
-                new Skin("Wheel of Fortune", "Wheel of Fortune skin."),
-                new Skin("Song of Ice and Fire", "Song of Ice and Fire skin.")
+                new Skin("Street Singer", "Street Singer skin.", 50.0),
+                new Skin("Bounty Hunter", "Bounty Hunter skin.", 75.0),
+                new Skin("Summer Dress", "Summer Dress skin.", 40.0),
+                new Skin("Holy Attire", "Holy Attire skin.", 60.0),
+                new Skin("Randez Vous", "Randez Vous skin.", 80.0),
+                new Skin("Masquarade", "Masquarade skin.", 70.0),
+                new Skin("Morning Glory", "Morning Glory skin.", 45.0),
+                new Skin("New Year´s festivities", "New Year´s festivities skin.", 90.0),
+                new Skin("Wheel of Fortune", "Wheel of Fortune skin.", 100.0),
+                new Skin("Song of Ice and Fire", "Song of Ice and Fire skin.", 120.0)
             );
 
             List<String> targetSkinNames = targetSkins.stream()
@@ -105,23 +119,23 @@ public class DataInitializer {
                     .map(Dlc::getDlcName)
                     .collect(Collectors.toList());
 
-            Dlc easterDlc1 = new Dlc("Easter Bunny", "A festive Easter Bunny outfit.");
-            Dlc easterDlc2 = new Dlc("Coming of Spring", "Celebrate the arrival of spring.");
-            Dlc easterDlc3 = new Dlc("Easter Spirit", "The true spirit of Easter.");
+            Dlc easterDlc1 = new Dlc("Easter Bunny", "A festive Easter Bunny outfit.", 200.0);
+            Dlc easterDlc2 = new Dlc("Coming of Spring", "Celebrate the arrival of spring.", 180.0);
+            Dlc easterDlc3 = new Dlc("Easter Spirit", "The true spirit of Easter.", 220.0);
 
-            Dlc schoolDlc1 = new Dlc("Freshman", "The classic freshman look.");
-            Dlc schoolDlc2 = new Dlc("Prom Queen", "Ready for the big dance.");
-            Dlc schoolDlc3 = new Dlc("School President", "Dressed for leadership.");
-            Dlc schoolDlc4 = new Dlc("The Bully", "Tough look for the hallways.");
+            Dlc schoolDlc1 = new Dlc("Freshman", "The classic freshman look.", 150.0);
+            Dlc schoolDlc2 = new Dlc("Prom Queen", "Ready for the big dance.", 250.0);
+            Dlc schoolDlc3 = new Dlc("School President", "Dressed for leadership.", 200.0);
+            Dlc schoolDlc4 = new Dlc("The Bully", "Tough look for the hallways.", 100.0);
 
-            Dlc christmasDlc1 = new Dlc("Santa´s Favourite", "Warm and cozy holiday attire.");
-            Dlc christmasDlc2 = new Dlc("Santa", "The big man himself.");
-            Dlc christmasDlc3 = new Dlc("Little Helper", "Helping out at the North Pole.");
+            Dlc christmasDlc1 = new Dlc("Santa´s Favourite", "Warm and cozy holiday attire.", 300.0);
+            Dlc christmasDlc2 = new Dlc("Santa", "The big man himself.", 350.0);
+            Dlc christmasDlc3 = new Dlc("Little Helper", "Helping out at the North Pole.", 175.0);
 
-            Dlc weddingDlc1 = new Dlc("Wedding Dress", "A beautiful white gown.");
-            Dlc weddingDlc2 = new Dlc("Bridesmaid", "Elegant support for the bride.");
-            Dlc weddingDlc3 = new Dlc("Lucky Man", "Sharp suit for the groom.");
-            Dlc weddingDlc4 = new Dlc("Honeymoon Suit", "Stylish look for the getaway.");
+            Dlc weddingDlc1 = new Dlc("Wedding Dress", "A beautiful white gown.", 400.0);
+            Dlc weddingDlc2 = new Dlc("Bridesmaid", "Elegant support for the bride.", 280.0);
+            Dlc weddingDlc3 = new Dlc("Lucky Man", "Sharp suit for the groom.", 320.0);
+            Dlc weddingDlc4 = new Dlc("Honeymoon Suit", "Stylish look for the getaway.", 290.0);
 
             List<Dlc> allTargetDlcs = List.of(
                 easterDlc1, easterDlc2, easterDlc3,
@@ -166,7 +180,8 @@ public class DataInitializer {
             && existingCharacters.stream().allMatch(character ->
                 GAME_CHARACTERS.stream().anyMatch(info ->
                     info.name.equals(character.getCharacterName()) &&
-                    info.description.equals(character.getCharacterDescription())
+                    info.description.equals(character.getCharacterDescription()) &&
+                    info.price == character.getPrice() // Compare price as well
                 )
             );
 
@@ -184,7 +199,7 @@ public class DataInitializer {
         characterRepository.flush();
 
         List<Character> charactersToSave = GAME_CHARACTERS.stream()
-            .map(info -> new Character(info.name, info.description))
+            .map(info -> new Character(info.name, info.description, info.price)) // Pass price to Character constructor
             .toList();
             
         List<Character> savedCharacters = characterRepository.saveAll(charactersToSave);
