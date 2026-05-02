@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/order")
@@ -85,14 +87,31 @@ public class OrderController {
                         .body("Player not found with ID: " + orderRequest.getPlayerId());
             }
 
+            Player player = playerOptional.get();
+
+            // Get all currently owned skins and DLCs for this player
+            Set<String> ownedSkinIds = player.getOrders().stream()
+                    .flatMap(order -> order.getSkins().stream())
+                    .map(Skin::getSkinId)
+                    .collect(Collectors.toSet());
+
+            Set<String> ownedDlcIds = player.getOrders().stream()
+                    .flatMap(order -> order.getDlcs().stream())
+                    .map(Dlc::getDlcId)
+                    .collect(Collectors.toSet());
+
             Order order = new Order();
-            order.setPlayer(playerOptional.get());
+            order.setPlayer(player);
             order.setOrderDate(resolveOrderDate(orderRequest.getOrderDate()));
             order.setOrderDescription(orderRequest.getOrderDescription());
 
             if (orderRequest.getSkinIds() != null && !orderRequest.getSkinIds().isEmpty()) {
                 List<Skin> skins = new ArrayList<>();
                 for (String skinId : orderRequest.getSkinIds()) {
+                    if (ownedSkinIds.contains(skinId)) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body("Player already owns Skin with ID: " + skinId);
+                    }
                     Optional<Skin> skinOptional = skinRepository.findById(skinId);
                     if (skinOptional.isEmpty()) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -106,6 +125,10 @@ public class OrderController {
             if (orderRequest.getDlcIds() != null && !orderRequest.getDlcIds().isEmpty()) {
                 List<Dlc> dlcs = new ArrayList<>();
                 for (String dlcId : orderRequest.getDlcIds()) {
+                    if (ownedDlcIds.contains(dlcId)) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body("Player already owns DLC with ID: " + dlcId);
+                    }
                     Optional<Dlc> dlcOptional = dlcRepository.findById(dlcId);
                     if (dlcOptional.isEmpty()) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
