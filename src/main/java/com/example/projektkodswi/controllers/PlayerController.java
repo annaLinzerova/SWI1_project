@@ -1,6 +1,11 @@
 package com.example.projektkodswi.controllers;
 
+import com.example.projektkodswi.dto.DlcDTO;
+import com.example.projektkodswi.dto.OrderProfileDTO;
 import com.example.projektkodswi.dto.PlayerDTO;
+import com.example.projektkodswi.dto.PlayerProfileDTO;
+import com.example.projektkodswi.dto.SkinDTO;
+import com.example.projektkodswi.entities.Order;
 import com.example.projektkodswi.entities.Player;
 import com.example.projektkodswi.repositories.PlayerRepository;
 import org.springframework.http.HttpStatus;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/players")
@@ -41,6 +47,44 @@ public class PlayerController {
             .<ResponseEntity<?>>map(player -> ResponseEntity.ok(toDto(player)))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player not found with ID: " + playerId));
+    }
+
+    @GetMapping("/{playerId}/profile")
+    public ResponseEntity<?> getPlayerProfile(@PathVariable String playerId) {
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Player not found with ID: " + playerId);
+        }
+
+        Player player = playerOptional.get();
+
+        List<OrderProfileDTO> orderProfiles = player.getOrders().stream().map(order -> {
+            List<SkinDTO> skinDTOs = order.getSkins().stream()
+                .map(skin -> new SkinDTO(skin.getSkinId(), skin.getSkinName(), skin.getSkinDescription()))
+                .collect(Collectors.toList());
+            
+            List<DlcDTO> dlcDTOs = order.getDlcs().stream()
+                .map(dlc -> new DlcDTO(dlc.getDlcId(), dlc.getDlcName(), dlc.getDlcDescription()))
+                .collect(Collectors.toList());
+
+            return new OrderProfileDTO(
+                order.getOrderId(),
+                order.getOrderDate(),
+                order.getOrderDescription(),
+                skinDTOs,
+                dlcDTOs
+            );
+        }).collect(Collectors.toList());
+
+        PlayerProfileDTO profileDTO = new PlayerProfileDTO(
+            player.getPlayerId(),
+            player.getUsername(),
+            player.getEmail(),
+            orderProfiles
+        );
+
+        return ResponseEntity.ok(profileDTO);
     }
 
     @PostMapping
