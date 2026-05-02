@@ -22,7 +22,6 @@ public class AuthController {
     private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Define initial currency for new players
     private static final double INITIAL_NEW_PLAYER_CURRENCY = 500.0; 
 
     public AuthController(PlayerRepository playerRepository, PasswordEncoder passwordEncoder) {
@@ -85,7 +84,6 @@ public class AuthController {
     }
 
     private PlayerDTO toDto(Player player) {
-        // Include currency in the DTO returned after login/registration
         return new PlayerDTO(player.getPlayerId(), player.getUsername(), null, player.getEmail(), player.getCurrency());
     }
 

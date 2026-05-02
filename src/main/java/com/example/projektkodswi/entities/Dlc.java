@@ -52,14 +52,14 @@ public class Dlc {
     private List<Character> characters = new ArrayList<>();
 
     public Dlc() {
-        this.rarity = Rarity.COMMON; // Default rarity
+        this.rarity = Rarity.COMMON;
     }
 
     public Dlc(String dlcName, String dlcDescription, double price) {
         this.dlcName = dlcName;
         this.dlcDescription = dlcDescription;
         this.price = price;
-        this.rarity = Rarity.COMMON; // Default rarity
+        this.rarity = Rarity.COMMON;
     }
 
     public Dlc(String dlcName, String dlcDescription, double price, Rarity rarity) {

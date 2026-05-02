@@ -33,23 +33,23 @@ public class Skin {
     @Column(name = "price", nullable = false)
     private double price;
 
-    @Enumerated(EnumType.STRING) // Store enum as String in DB
+    @Enumerated(EnumType.STRING)
     @Column(name = "rarity", nullable = false)
-    private Rarity rarity; // New field for skin rarity
+    private Rarity rarity;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "skins")
     private List<Order> orders = new ArrayList<>();
 
     public Skin() {
-        this.rarity = Rarity.COMMON; // Default rarity
+        this.rarity = Rarity.COMMON;
     }
 
     public Skin(String skinName, String skinDescription, double price) {
         this.skinName = skinName;
         this.skinDescription = skinDescription;
         this.price = price;
-        this.rarity = Rarity.COMMON; // Default rarity
+        this.rarity = Rarity.COMMON;
     }
 
     public Skin(String skinName, String skinDescription, double price, Rarity rarity) {

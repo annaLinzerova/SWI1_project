@@ -6,7 +6,7 @@ public class PlayerProfileDTO {
     private String playerId;
     private String username;
     private String email;
-    private double currency; // New field for player currency
+    private double currency;
     private List<OrderProfileDTO> orders;
 
     public PlayerProfileDTO() {

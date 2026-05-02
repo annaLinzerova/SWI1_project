@@ -41,7 +41,7 @@ public class Character {
     public Character(String characterName, String characterDescription) {
         this.characterName = characterName;
         this.characterDescription = characterDescription;
-        this.price = 0.0; // Default price
+        this.price = 0.0;
     }
 
     public Character(String characterName, String characterDescription, double price) {

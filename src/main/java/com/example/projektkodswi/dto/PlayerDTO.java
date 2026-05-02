@@ -3,9 +3,9 @@ package com.example.projektkodswi.dto;
 public class PlayerDTO {
     private String playerId;
     private String username;
-    private String password; // Keep for registration/login, but typically null for profile
+    private String password;
     private String email;
-    private double currency; // New field for player currency
+    private double currency;
 
     public PlayerDTO() {
     }

@@ -27,21 +27,21 @@ public class Player {
     private String email;
 
     @Column(name = "currency", nullable = false)
-    private double currency; // New field for player currency
+    private double currency;
 
     @JsonIgnore
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     public Player() {
-        this.currency = 0.0; // Default currency for new players
+        this.currency = 0.0;
     }
 
     public Player(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.currency = 0.0; // Default currency for new players
+        this.currency = 0.0;
     }
 
     // Getters and Setters

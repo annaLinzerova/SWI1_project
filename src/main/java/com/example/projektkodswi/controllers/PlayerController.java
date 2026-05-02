@@ -95,7 +95,7 @@ public class PlayerController {
             player.getPlayerId(),
             player.getUsername(),
             player.getEmail(),
-            player.getCurrency(), // Pass currency to PlayerProfileDTO
+            player.getCurrency(),
             orderProfiles
         );
         
@@ -136,7 +136,7 @@ public class PlayerController {
             player.getUsername(),
             null,
             player.getEmail(),
-            player.getCurrency() // Pass currency to PlayerDTO
+            player.getCurrency()
         );
     }
 

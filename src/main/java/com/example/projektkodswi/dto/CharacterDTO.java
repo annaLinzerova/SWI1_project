@@ -4,7 +4,7 @@ public class CharacterDTO {
     private String characterId;
     private String characterName;
     private String characterDescription;
-    private double price; // New field for character price
+    private double price;
 
     public CharacterDTO() {
     }
@@ -13,7 +13,7 @@ public class CharacterDTO {
         this.characterId = characterId;
         this.characterName = characterName;
         this.characterDescription = characterDescription;
-        this.price = 0.0; // Default price
+        this.price = 0.0;
     }
 
     public CharacterDTO(String characterId, String characterName, String characterDescription, double price) {
