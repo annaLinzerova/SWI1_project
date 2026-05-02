@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="swiblbost" id="F0DCE59B-ED76-17FA-6798-5FE92C421B94" version="3.5">
+<createdBy>AriZo</createdBy>
+<createdTime>2026-02-22 11:01:09 UTC</createdTime>
+<ownerDesignName>ORACLE SRACKA</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>F0DCE59B-ED76-17FA-6798-5FE92C421B94</designId>
+</OSDM_Design>
