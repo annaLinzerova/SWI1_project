@@ -1,0 +1,82 @@
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.info-section {
+    background-color: #003022;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #1a4d3e;
+}
+
+.info-section h2 {
+    color: #4CAF50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 24px;
+    border-bottom: 1px solid #1a4d3e;
+    padding-bottom: 10px;
+}
+
+.info-section p {
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.welcome-list {
+    margin-top: 15px;
+    padding-left: 20px;
+}
+
+.welcome-list li {
+    margin-bottom: 10px;
+}
+
+.welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    border-top: 2px solid #1a4d3e;
+    padding-top: 30px;
+}
+
+.welcome-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-align: center;
+    min-width: 180px;
+}
+
+.welcome-btn.primary {
+    background-color: #36160D;
+    color: #ffffff;
+    border: none;
+}
+
+.welcome-btn.primary:hover {
+    background-color: #4a1f12;
+}
+
+.welcome-btn.secondary {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+.welcome-btn.secondary:hover {
+    background-color: #45a049;
+}
+
+.welcome-btn:active {
+    transform: scale(0.98);
+}

@@ -1,0 +1,148 @@
+.profile-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 40px;
+    background: linear-gradient(145deg, rgba(32, 96, 77, 0.95), rgba(0, 48, 34, 0.98));
+    border: 2px solid #36160D;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-header {
+    text-align: center;
+    border-bottom: 2px solid rgba(76, 175, 80, 0.2);
+    padding-bottom: 30px;
+    margin-bottom: 40px;
+}
+
+.profile-header h1 {
+    font-size: 3.5rem;
+    color: #f0f0f0;
+    margin: 0;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+}
+
+.profile-header p {
+    color: #b0b0b0;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.profile-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+.reset-btn {
+    background-color: transparent;
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.reset-btn:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+    transform: translateY(-1px);
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.profile-section {
+    background: rgba(0, 48, 34, 0.5);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(76, 175, 80, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-section:hover {
+    border-color: rgba(76, 175, 80, 0.4);
+    transform: translateY(-5px);
+}
+
+.profile-section h2 {
+    color: #4CAF50;
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-section h2::before {
+    content: '◈';
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.empty-message {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 30px 0;
+    border: 1px dashed rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profile-table td {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(76, 175, 80, 0.1);
+    color: #e0e0e0;
+    font-size: 1.05rem;
+}
+
+.profile-table tr:last-child td {
+    border-bottom: none;
+}
+
+.owned-badge {
+    color: #4CAF50;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: right;
+}
+
+.loading-container {
+    text-align: center;
+    padding: 100px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(76, 175, 80, 0.1);
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
